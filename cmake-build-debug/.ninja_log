@@ -1,0 +1,6 @@
+# ninja log v5
+5	549	7182984008006897	build.ninja	16fdfe49e65b3c5b
+10	775	7181741080863697	CMakeFiles/CapstoneProject.dir/main.cpp.obj	ebaa3d8bfcfecc3d
+8	198	7181724260149239	CMakeFiles/CapstoneProject.dir/src/server.cpp.obj	974a6cbe804c7a11
+1	205	7181724260248923	CMakeFiles/CapstoneProject.dir/src/client.cpp.obj	e0f7f748cf8e411e
+776	997	7181741082985976	CapstoneProject.exe	ea05d97c904245ac
