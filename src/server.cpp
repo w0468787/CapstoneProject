@@ -5,7 +5,7 @@
 #include "../include/server.h"
 
 Server::Server(int port, const char* ip_address) {
-    if(port<0&&ip_address==""){
+    if(port<=0&&ip_address==NULL){
 
     }else {
         WSADATA wsa_data;
