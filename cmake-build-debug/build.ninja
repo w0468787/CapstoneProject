@@ -51,19 +51,25 @@ build cmake_object_order_depends_target_CapstoneProject: phony || CMakeFiles/Cap
 
 build CMakeFiles/CapstoneProject.dir/main.cpp.obj: CXX_COMPILER__CapstoneProject_unscanned_Debug C$:/Users/heral/School/Capstone/CapstoneProject/main.cpp || cmake_object_order_depends_target_CapstoneProject
   DEP_FILE = CMakeFiles\CapstoneProject.dir\main.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
+  FLAGS = -static -g -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\CapstoneProject.dir
   OBJECT_FILE_DIR = CMakeFiles\CapstoneProject.dir
 
 build CMakeFiles/CapstoneProject.dir/src/client.cpp.obj: CXX_COMPILER__CapstoneProject_unscanned_Debug C$:/Users/heral/School/Capstone/CapstoneProject/src/client.cpp || cmake_object_order_depends_target_CapstoneProject
   DEP_FILE = CMakeFiles\CapstoneProject.dir\src\client.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
+  FLAGS = -static -g -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\CapstoneProject.dir
   OBJECT_FILE_DIR = CMakeFiles\CapstoneProject.dir\src
 
 build CMakeFiles/CapstoneProject.dir/src/server.cpp.obj: CXX_COMPILER__CapstoneProject_unscanned_Debug C$:/Users/heral/School/Capstone/CapstoneProject/src/server.cpp || cmake_object_order_depends_target_CapstoneProject
   DEP_FILE = CMakeFiles\CapstoneProject.dir\src\server.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
+  FLAGS = -static -g -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\CapstoneProject.dir
+  OBJECT_FILE_DIR = CMakeFiles\CapstoneProject.dir\src
+
+build CMakeFiles/CapstoneProject.dir/src/encrypt.cpp.obj: CXX_COMPILER__CapstoneProject_unscanned_Debug C$:/Users/heral/School/Capstone/CapstoneProject/src/encrypt.cpp || cmake_object_order_depends_target_CapstoneProject
+  DEP_FILE = CMakeFiles\CapstoneProject.dir\src\encrypt.cpp.obj.d
+  FLAGS = -static -g -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\CapstoneProject.dir
   OBJECT_FILE_DIR = CMakeFiles\CapstoneProject.dir\src
 
@@ -75,9 +81,9 @@ build CMakeFiles/CapstoneProject.dir/src/server.cpp.obj: CXX_COMPILER__CapstoneP
 #############################################
 # Link the executable CapstoneProject.exe
 
-build CapstoneProject.exe: CXX_EXECUTABLE_LINKER__CapstoneProject_Debug CMakeFiles/CapstoneProject.dir/main.cpp.obj CMakeFiles/CapstoneProject.dir/src/client.cpp.obj CMakeFiles/CapstoneProject.dir/src/server.cpp.obj
-  FLAGS = -g
-  LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+build CapstoneProject.exe: CXX_EXECUTABLE_LINKER__CapstoneProject_Debug CMakeFiles/CapstoneProject.dir/main.cpp.obj CMakeFiles/CapstoneProject.dir/src/client.cpp.obj CMakeFiles/CapstoneProject.dir/src/server.cpp.obj CMakeFiles/CapstoneProject.dir/src/encrypt.cpp.obj
+  FLAGS = -static -g
+  LINK_LIBRARIES = -lwsock32  -lws2_32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\CapstoneProject.dir
   POST_BUILD = cd .
   PRE_LINK = cd .

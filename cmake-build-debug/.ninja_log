@@ -1,6 +1,22 @@
 # ninja log v5
-5	549	7182984008006897	build.ninja	16fdfe49e65b3c5b
-10	775	7181741080863697	CMakeFiles/CapstoneProject.dir/main.cpp.obj	ebaa3d8bfcfecc3d
-8	198	7181724260149239	CMakeFiles/CapstoneProject.dir/src/server.cpp.obj	974a6cbe804c7a11
-1	205	7181724260248923	CMakeFiles/CapstoneProject.dir/src/client.cpp.obj	e0f7f748cf8e411e
-776	997	7181741082985976	CapstoneProject.exe	ea05d97c904245ac
+7	3908	7195099339208438	CMakeFiles/CapstoneProject.dir/main.cpp.obj	ebaa3d8bfcfecc3d
+3	461	7195100436296586	build.ninja	16fdfe49e65b3c5b
+37	3834	7195088961853220	CMakeFiles/CapstoneProject.dir/src/server.cpp.obj	974a6cbe804c7a11
+25	3839	7195088961913022	CMakeFiles/CapstoneProject.dir/src/client.cpp.obj	e0f7f748cf8e411e
+17	229	7195086581082069	CMakeFiles/CapstoneProject.dir/src/encrypt.cpp.obj	9ae7138a270df142
+3910	4240	7195099342480620	CapstoneProject.exe	6e0e8fa69432e83c
+2	777	7195100436296586	build.ninja	16fdfe49e65b3c5b
+12	336	7195100441368183	CMakeFiles/CapstoneProject.dir/src/encrypt.cpp.obj	8c545ad42f853b4
+24	5428	7195100492030993	CMakeFiles/CapstoneProject.dir/src/client.cpp.obj	137b6e33a80e2e2d
+6	5452	7195100492529320	CMakeFiles/CapstoneProject.dir/src/server.cpp.obj	82b1719243a3d907
+35	5473	7195100492728634	CMakeFiles/CapstoneProject.dir/main.cpp.obj	11b827859e671abb
+5474	6961	7195100507506174	CapstoneProject.exe	6d837da4b6b24e5a
+10	4267	7195102516408264	CMakeFiles/CapstoneProject.dir/main.cpp.obj	11b827859e671abb
+4269	5069	7195102524383536	CapstoneProject.exe	6d837da4b6b24e5a
+12	3887	7195102852133917	CMakeFiles/CapstoneProject.dir/main.cpp.obj	11b827859e671abb
+3889	4828	7195102861492588	CapstoneProject.exe	6d837da4b6b24e5a
+11	2982	7195103065963521	CMakeFiles/CapstoneProject.dir/main.cpp.obj	11b827859e671abb
+2985	3610	7195103072128179	CapstoneProject.exe	6d837da4b6b24e5a
+44	4725	7195106555533961	CMakeFiles/CapstoneProject.dir/src/server.cpp.obj	82b1719243a3d907
+6	4060	7195106946878259	CMakeFiles/CapstoneProject.dir/main.cpp.obj	11b827859e671abb
+4062	5187	7195106958359851	CapstoneProject.exe	6d837da4b6b24e5a
