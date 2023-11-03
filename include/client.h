@@ -14,11 +14,26 @@
 class Client {
 private:
     SOCKET m_client_socket;
+    std::string m_client_ip;
+    int m_client_port;
 
 public:
-    Client(const std::string& server_ip="", int server_port=0);
-    void send_message(std::string& message);
+    Client();
+
+    void set_client_ip(const std::string& client_ip);
+    std::string get_client_ip() const;
+
+    void set_client_port(int client_port);
+    int get_client_port() const;
+
+
+    bool initialize_client();
+    void send_message(const std::string& message);
+    void receive_message();
     void disconnect();
+    SOCKET get_m_client_socket() const;
+
+    void set_m_client_socket(SOCKET new_client_socket);
 };
 
 

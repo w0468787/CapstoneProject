@@ -11,6 +11,9 @@ using namespace std;
 int main(int argc,char *argv[]) {
     Server server;
     Client client;
+    bool network_flag=false;
+    bool server_flag=false;
+    bool client_flag=false;
     const int ESC=27;
     const int BUFFER_SIZE = 256;
     const int ERROR_SIZE = 256;
@@ -22,50 +25,74 @@ int main(int argc,char *argv[]) {
     const std::string IP_ADDRESS = "192.168.192.1";
     const int PORT = 12345;
 
-    if (argc >= 2 && std::string(argv[1]) == "-server") {
+    bool serverConnected = false;
+    bool clientConnected = false;
 
-        Server server(PORT,IP_ADDRESS.c_str());
-        server.client_accept();
-    } else {
-        Client client(IP_ADDRESS,PORT);
 
-    }
-    //chat loop
-    bool running=true;
-    try{
-        while(running){
-            if(_kbhit()){
-                char in_key=_getch();
-
-                if(in_key=='i'||in_key=='I'){
-                    std::cout<<"Insertion Mode"<<std::endl;
-                    std::string message;
-                    std::getline(std::cin, message);
-
-                    if (argc >= 3 && std::string(argv[2]) == "-server"){
-                        server.send_message(message);
-                    }else{
-                        client.send_message(message);
-                    }
-                }else if(in_key==ESC){
-                    std::cout<<"you hit escape";
-                    if (argc >= 3 && std::string(argv[2]) == "-server")
-                    {
-                        server.disconnect();
-                    }
-                    else
-                    {
-                        client.disconnect();
-                    }
-
-                    running=false;
+        try {
+            if (argc >= 2 && std::string(argv[1]) == "-server") {
+                server.set_port(PORT);
+                server.set_ip_address(IP_ADDRESS);
+                server.initialize_server();
+                server.start_listening();
+                if (server.has_client()) {
+                    serverConnected = true;
+                    server_flag=true;
                 }
-
-
+            } else {
+                client.set_client_port(PORT);
+                client.set_client_ip(IP_ADDRESS);
+                client.initialize_client();
+                clientConnected = true;
             }
 
+            // Attempt to receive messages from the other end before starting chat
+            if (serverConnected) {
+                client.set_m_client_socket(server.get_m_client_socket());
+                //client.receive_message();
+            } else if (clientConnected) {
+                server.set_m_client_socket(client.get_m_client_socket());
+                //server.receive_message();
+            }
+        } catch (std::exception &e) {
+            // Handle initialization errors here if necessary
         }
+    std::cout<<"you got free of the server client loop headed to chat"<<std::endl;
+    //chat loop
+    try{
+        std::string message;
 
+        while (serverConnected||clientConnected) {
+            std::getline(std::cin, message);
+
+            if (message == "i" || message == "I") {
+                std::cout << "Insertion Mode" << std::endl;
+                std::getline(std::cin, message); // Get the message from the user in insertion mode
+
+                if (argc >= 2 && server_flag) {
+                    server.send_message(message);
+                    client.receive_message();
+                } else {
+                    client.send_message(message);
+                    server.receive_message();
+                }
+            } else if (message == "q") {
+                std::cout << "You hit escape" << std::endl;
+                if (argc >= 2 && server_flag) {
+                    server.disconnect();
+                    serverConnected=false;
+                } else {
+                    client.disconnect();
+                    clientConnected=false;
+
+                }
+                serverConnected=false;
+                clientConnected=false;
+                network_flag = false;
+            } else {
+                std::cout << "Invalid input. Please enter 'i' for Insertion Mode or 'ESC' to quit." << std::endl;
+            }
+        }
 
     }catch (exception& e){
         cout<<e.what()<<'\n';
