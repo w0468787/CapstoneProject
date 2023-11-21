@@ -10,12 +10,17 @@
 #include <string>
 #include <sstream>
 #include <winsock2.h>
+#include <thread>
+#include "encrypt.h"
 
 class Client {
 private:
     SOCKET m_client_socket;
     std::string m_client_ip;
     int m_client_port;
+    std::thread m_receive_thread;
+    bool m_receiving;
+    Encrypt m_encrypt_tool;
 
 public:
     Client();
@@ -29,9 +34,12 @@ public:
 
     bool initialize_client();
     void send_message(const std::string& message);
+    void start_thread();
+    void start_receiving();
     void receive_message();
     void disconnect();
     SOCKET get_m_client_socket() const;
+    bool find_free_port(int& port);
 
     void set_m_client_socket(SOCKET new_client_socket);
 };

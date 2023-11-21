@@ -60,7 +60,8 @@ int Client::get_client_port() const {
 }
 
 void Client::send_message(const std::string& message) {
-    int result = send(m_client_socket, message.c_str(), message.size(), 0);
+    std::string encrypted_message=m_encrypt_tool.encrypt_message(message);
+    int result = send(m_client_socket, encrypted_message.c_str(), encrypted_message.size(), 0);
     if (result == SOCKET_ERROR) {
         std::cerr << "Error sending message: " << WSAGetLastError() << std::endl;
         closesocket(m_client_socket);
@@ -68,6 +69,20 @@ void Client::send_message(const std::string& message) {
         return;
     }
 }
+void Client::start_thread() {
+    // Start a detached thread for receiving messages
+    m_receiving = true;
+    m_receive_thread = std::thread(&Client::start_receiving, this);
+    m_receive_thread.detach();
+}
+
+void Client::start_receiving() {
+    while (m_receiving) {
+        receive_message();
+        // Add a delay or other logic here if needed
+    }
+}
+
 void Client::receive_message() {
     const int BUFFER_SIZE = 1024;
     char buffer[BUFFER_SIZE];
@@ -75,12 +90,12 @@ void Client::receive_message() {
 
     if (bytes_received == SOCKET_ERROR) {
         std::cerr << "Error receiving data: " << WSAGetLastError() << std::endl;
-    } else if (bytes_received == 0) {
-        std::cout << "Connection closed by client." << std::endl;
-        // Handle the case where the connection is closed by the server
-    } else {
+        std::exit(0);
+    }else {
         buffer[bytes_received] = '\0';
-        std::cout << "Received data from client: " << buffer << std::endl;
+        std::string to_decrypt(buffer);
+       std::string decrypted=m_encrypt_tool.decrypt_message(to_decrypt);
+        std::cout << "\nDecrypted: " << decrypted << std::endl;
     }
 }
 
@@ -97,4 +112,3 @@ SOCKET Client::get_m_client_socket() const {
 void Client::set_m_client_socket(SOCKET new_client_socket) {
     m_client_socket = new_client_socket;
 }
-

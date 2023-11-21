@@ -29,111 +29,72 @@ int main(int argc,char *argv[]) {
     bool clientConnected = false;
 
 
-        try {
-            if (argc >= 2 && std::string(argv[1]) == "-server") {
-                server.set_port(PORT);
-                server.set_ip_address(IP_ADDRESS);
-                server.initialize_server();
-                server.start_listening();
-                if (server.has_client()) {
-                    serverConnected = true;
-                    server_flag=true;
-                }
-            } else {
-                client.set_client_port(PORT);
-                client.set_client_ip(IP_ADDRESS);
-                client.initialize_client();
-                clientConnected = true;
+    try {
+        if (argc >= 2 && std::string(argv[1]) == "-server") {
+            server.set_port(PORT);
+            server.set_ip_address(IP_ADDRESS);
+            server.initialize_server();
+            server.start_listening();
+            if (server.has_client()) {
+                serverConnected = true;
+                server_flag=true;
             }
-
-            // Attempt to receive messages from the other end before starting chat
-            if (serverConnected) {
-                client.set_m_client_socket(server.get_m_client_socket());
-                //client.receive_message();
-            } else if (clientConnected) {
-                server.set_m_client_socket(client.get_m_client_socket());
-                //server.receive_message();
-            }
-        } catch (std::exception &e) {
-            // Handle initialization errors here if necessary
+        } else {
+            client.set_client_port(PORT);
+            client.set_client_ip(IP_ADDRESS);
+            client.initialize_client();
+            clientConnected = true;
         }
-    std::cout<<"you got free of the server client loop headed to chat"<<std::endl;
+
+        // Attempt to receive messages from the other end before starting chat
+        if (serverConnected) {
+            client.set_m_client_socket(server.get_m_client_socket());
+            //client.receive_message();
+        } else if (clientConnected) {
+            // Start a detached thread for receiving messages
+            server.set_m_client_socket(client.get_m_client_socket());
+
+        }
+    } catch (std::exception &e) {
+        // Handle initialization errors here if necessary
+    }
+    std::cout<<"You have entered the chat:"<<std::endl;
     //chat loop
     try{
         std::string message;
-
-        while (serverConnected||clientConnected) {
+        server.start_thread();
+        client.start_thread();
+        while (serverConnected || clientConnected) {
             std::getline(std::cin, message);
 
-            if (message == "i" || message == "I") {
-                std::cout << "Insertion Mode" << std::endl;
-                std::getline(std::cin, message); // Get the message from the user in insertion mode
+            if (argc >= 2 && server_flag) {
+                server.send_message(message);
+                // client.receive_message();
+            } else {
+                client.send_message(message);
+                // server.receive_message();
+            }
 
-                if (argc >= 2 && server_flag) {
-                    server.send_message(message);
-                    client.receive_message();
-                } else {
-                    client.send_message(message);
-                    server.receive_message();
-                }
-            } else if (message == "q") {
-                std::cout << "You hit escape" << std::endl;
+            // Check for termination condition
+            if (message == "q") {
+                std::cout << "You hit 'q'. Terminating connection." << std::endl;
                 if (argc >= 2 && server_flag) {
                     server.disconnect();
-                    serverConnected=false;
+                    serverConnected = false;
                 } else {
                     client.disconnect();
-                    clientConnected=false;
-
+                    clientConnected = false;
                 }
-                serverConnected=false;
-                clientConnected=false;
+
+                serverConnected = false;
+                clientConnected = false;
                 network_flag = false;
-            } else {
-                std::cout << "Invalid input. Please enter 'i' for Insertion Mode or 'ESC' to quit." << std::endl;
             }
         }
 
     }catch (exception& e){
         cout<<e.what()<<'\n';
     }
-    //Encrypt trial
-    char trial_string[] = "hello world";
-    char buffer[BUFFER_SIZE]; // Define buffer with a size of 256 (adjust according to your needs)
-    char curr;
-    int ceaser_key = 5;
-
-
-    // Copy trial_string to buffer
-    strncpy(buffer, trial_string, BUFFER_SIZE);
-    cout << "Normal: " << buffer << std::endl;
-   
-    for (int i = 0; buffer[i] != '\0'; i++) {
-        curr = buffer[i];
-        // Perform operations on buffer[i] here
-        if (curr >= 'a' && curr <= 'z') {
-            curr = curr + ceaser_key;
-            if (curr > 'z') {
-                curr = curr - 'z' + 'a' + 1;
-            }
-        }
-        buffer[i] = curr;
-    }
-    cout << "Modified: " << buffer<<std::endl;
-
-    // Decrypt Trial
-    for (int i = 0; buffer[i] != '\0'; ++i) {
-        curr = buffer[i];
-        if (curr >= 'a' && curr <= 'z') {
-            curr = curr - ceaser_key;
-            if (curr < 'a') {
-                curr = curr + 'z' - 'a' -1;
-            }
-        }
-        buffer[i] = curr;
-    }
-
-    cout<<"decrypted: "<<buffer;
 
     //Testing
 

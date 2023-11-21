@@ -10,6 +10,8 @@
 #include <ws2tcpip.h>
 #include <string>
 #include <sstream>
+#include <thread>
+#include "encrypt.h"
 
 class Server {
 private:
@@ -19,7 +21,9 @@ private:
     int m_port;
     std::string m_ip_address;
     bool m_has_client;
-
+    std::thread m_receive_thread;
+    bool m_receiving;
+    Encrypt m_encrypt_tool;
 public:
 
     Server();
@@ -35,6 +39,8 @@ public:
     void client_accept();
 
     void send_message(const std::string& message);
+    void start_thread();
+    void start_receiving();
     void receive_message();
 
     void disconnect();

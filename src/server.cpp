@@ -6,7 +6,7 @@
 
 Server::Server(): m_port(0), m_ip_address(""), m_listen_socket(INVALID_SOCKET) {
 
-    }
+}
 
 
 // Setter for m_port
@@ -103,7 +103,9 @@ void Server::start_listening() {
     // Starts the listener and displays a message for better UX
     std::cout << "Server Started Waiting For Client Connection:" << std::endl;
     listen(m_listen_socket, SOMAXCONN);
+
     client_accept();
+
 }
 
 void Server::client_accept() {
@@ -123,15 +125,18 @@ void Server::client_accept() {
 }
 
 
-void Server::send_message(const std::string &message) {
+void Server::send_message(const std::string& message) {
     // Check if the message is empty
     if (message.empty()) {
         std::cerr << "Empty message provided for sending." << std::endl;
         return;
     }
 
-    // Send the message to the client
-    int result = send(m_client_socket, message.c_str(), strlen(message.c_str()), 0);
+    // Encrypt the message
+    std::string encrypted_message = m_encrypt_tool.encrypt_message(message);
+
+    // Send the encrypted message to the client
+    int result = send(m_client_socket, encrypted_message.c_str(), encrypted_message.size(), 0);
 
     if (result == SOCKET_ERROR) {
         std::cerr << "Send failed: " << WSAGetLastError() << std::endl;
@@ -139,7 +144,21 @@ void Server::send_message(const std::string &message) {
         closesocket(m_listen_socket);
         WSACleanup();
     } else {
-        std::cout << "Message sent successfully: "<< std::endl;
+        std::cout << "Message sent successfully: " << std::endl;
+    }
+}
+
+void Server::start_thread() {
+    // Start a detached thread for receiving messages
+    m_receiving = true;
+    m_receive_thread = std::thread(&Server::start_receiving, this);
+    m_receive_thread.detach();
+}
+
+void Server::start_receiving() {
+    while (m_receiving) {
+        receive_message();
+        // Add a delay or other logic here if needed
     }
 }
 
@@ -150,12 +169,15 @@ void Server::receive_message() {
 
     if (bytes_received == SOCKET_ERROR) {
         std::cerr << "Error receiving data: " << WSAGetLastError() << std::endl;
+        std::exit(0);
     } else if (bytes_received == 0) {
         std::cout << "Connection closed by server." << std::endl;
         // Handle the case where the connection is closed by the client
     } else {
         buffer[bytes_received] = '\0';
-        std::cout << "Received data from server: " << buffer << std::endl;
+        std::string to_decrypt(buffer);
+        std::string decrypted=m_encrypt_tool.decrypt_message(to_decrypt);
+        std::cout << "\nDecrypted: " << decrypted << std::endl;
     }
 }
 
