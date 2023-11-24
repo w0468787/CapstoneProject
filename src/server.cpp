@@ -168,8 +168,7 @@ void Server::receive_message() {
     int bytes_received = recv(m_client_socket, buffer, BUFFER_SIZE, 0);
 
     if (bytes_received == SOCKET_ERROR) {
-        std::cerr << "Error receiving data: " << WSAGetLastError() << std::endl;
-        std::exit(0);
+        throw std::runtime_error("Corresponding app closed");
     } else if (bytes_received == 0) {
         std::cout << "Connection closed by server." << std::endl;
         // Handle the case where the connection is closed by the client
