@@ -10,7 +10,9 @@ add_executable(CapstoneProject main.cpp
         src/server.cpp
         include/server.h
         src/encrypt.cpp
-        include/encrypt.h)
+        include/encrypt.h
+        src/setup_chat.cpp
+        include/setup_chat.h)
 
 target_link_libraries(CapstoneProject wsock32 ws2_32)
 

@@ -5,29 +5,28 @@
 #include <conio.h>
 #include "include/client.h"
 #include "include/server.h"
+#include "include/setup_chat.h"
 
 using namespace std;
 
-int main(int argc,char *argv[]) {
+int main(int argc, char *argv[]) {
     Server server;
     Client client;
-    bool network_flag=false;
-    bool server_flag=false;
-    bool client_flag=false;
-    const int ESC=27;
+    SetupChat setup_chat;
+    bool network_flag = false;
+    bool server_flag = false;
+    bool client_flag = false;
+    const int ESC = 27;
     const int BUFFER_SIZE = 256;
     const int ERROR_SIZE = 256;
     std::cout << "Hello! Welcome to SecureNetChat, this application provides real time encryption\nby"
                  " encrypting user input then sending it across OSI 7 layer model.\n and decrypting"
                  " it at the side of the receiver.\n" << std::endl;
 
-    //networking attempts
     const std::string IP_ADDRESS = "192.168.192.1";
     const int PORT = 12345;
-
-    bool serverConnected = false;
-    bool clientConnected = false;
-
+    bool server_connected = false;
+    bool client_connected = false;
 
     try {
         if (argc >= 2 && std::string(argv[1]) == "-server") {
@@ -36,21 +35,20 @@ int main(int argc,char *argv[]) {
             server.initialize_server();
             server.start_listening();
             if (server.has_client()) {
-                serverConnected = true;
-                server_flag=true;
+                server_connected = true;
+                server_flag = true;
             }
         } else {
             client.set_client_port(PORT);
             client.set_client_ip(IP_ADDRESS);
             client.initialize_client();
-            clientConnected = true;
+            client_connected = true;
         }
-
         // Attempt to receive messages from the other end before starting chat
-        if (serverConnected) {
+        if (server_connected) {
             client.set_m_client_socket(server.get_m_client_socket());
             //client.receive_message();
-        } else if (clientConnected) {
+        } else if (client_connected) {
             // Start a detached thread for receiving messages
             server.set_m_client_socket(client.get_m_client_socket());
 
@@ -58,48 +56,35 @@ int main(int argc,char *argv[]) {
     } catch (std::exception &e) {
         // Handle initialization errors here if necessary
     }
-    std::cout<<"You have entered the chat:"<<std::endl;
-    //chat loop
-    try{
-        std::string message;
-        server.start_thread();
-        client.start_thread();
-        while (serverConnected || clientConnected) {
-            std::getline(std::cin, message);
-
-            if (argc >= 2 && server_flag) {
-                server.send_message(message);
-                // client.receive_message();
-            } else {
-                client.send_message(message);
-                // server.receive_message();
-            }
-
-            // Check for termination condition
-            if (message == "q") {
-                std::cout << "You hit 'q'. Terminating connection." << std::endl;
-                if (argc >= 2 && server_flag) {
-                    server.disconnect();
-                    serverConnected = false;
-                } else {
-                    client.disconnect();
-                    clientConnected = false;
-                }
-
-                serverConnected = false;
-                clientConnected = false;
-                network_flag = false;
-            }
-        }
-
-    }catch (exception& e){
-        cout<<e.what()<<'\n';
-    }
-
-    //Testing
-
-
-
+    setup_chat.chat_loop(server, client, server_connected, client_connected, network_flag, server_flag);
 
     return 0;
 }
+
+//Testing
+#if TESTING
+    int main(int argc, char* argv[]) {
+        Server server;
+        Client client;
+        bool network_flag = false;
+        bool serverConnected = false;
+        bool clientConnected = false;
+        bool server_flag = false;
+
+        std::cout << "Hello! Welcome to SecureNetChat, this application provides real time encryption\n"
+                     "by encrypting user input then sending it across OSI 7 layer model.\n and decrypting"
+                     " it at the side of the receiver.\n"
+                  << std::endl;
+        SetupChat setup_chat;
+        setup_chat.perform_networking(server, client, serverConnected,
+                                      clientConnected, server_flag);
+
+        setup_chat.chat_loop(server, client, serverConnected, clientConnected,
+                             network_flag, server_flag);
+
+        // Testing
+
+        return 0;
+    }
+#endif
+
